@@ -1,12 +1,13 @@
 import 'dart:isolate';
 
-import 'package:meta/meta.dart';
+import '../iso.dart' show Iso;
+
+import 'iso.dart' show Iso;
 
 /// The isolate runner
 class IsoRunner {
   /// A [chanOut] has to be provided
-  IsoRunner({required this.chanOut, this.dataIn, this.args})
-      : assert(chanOut != null);
+  IsoRunner({required this.chanOut, this.dataIn, this.args});
 
   /// The [SendPort] to send data into the isolate
   final SendPort chanOut;
@@ -21,7 +22,7 @@ class IsoRunner {
   bool get hasArgs => args!.isNotEmpty;
 
   /// Send data to the main thread
-  void send(dynamic data) => chanOut.send(data);
+  void send(final dynamic data) => chanOut.send(data);
 
   /// Initialize the receive channel
   ///

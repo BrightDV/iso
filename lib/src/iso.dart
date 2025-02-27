@@ -14,9 +14,9 @@ class Iso {
   Iso(this.runFunction, {this.onDataOut, this.onError})
       : _fromIsolateReceivePort = ReceivePort(),
         _fromIsolateErrorPort = ReceivePort() {
-    onDataOut ??= (dynamic data) => null;
-    onError ??=
-        (dynamic err) => throw IsolateRuntimeError("Error in isolate:\n $err");
+    onDataOut ??= (final dynamic data) {};
+    onError ??= (final dynamic err) =>
+        throw IsolateRuntimeError("Error in isolate:\n $err");
   }
 
   /// The function to run in the isolate
@@ -46,13 +46,13 @@ class Iso {
   bool get canReceive => _canReceive;
 
   /// Send data to the isolate
-  void send(dynamic data) {
+  void send(final dynamic data) {
     assert(_toIsolateSendPort != null);
     _toIsolateSendPort!.send(data);
   }
 
   /// Run the isolate
-  Future<void> run([List<dynamic> args = const <dynamic>[]]) async {
+  Future<void> run([final List<dynamic> args = const <dynamic>[]]) async {
     //print("I > run");
     final _comChanCompleter = Completer<void>();
     // set runner config
@@ -61,9 +61,9 @@ class Iso {
     // run
     await Isolate.spawn(runFunction, runner,
             onError: _fromIsolateErrorPort.sendPort)
-        .then((Isolate _is) {
+        .then((final Isolate _is) {
       _isolate = _is;
-      _fromIsolateReceivePort.listen((dynamic data) {
+      _fromIsolateReceivePort.listen((final dynamic data) {
         if (_toIsolateSendPort == null && data is SendPort) {
           _toIsolateSendPort = data;
           //print("I > com port received $data");
@@ -73,10 +73,10 @@ class Iso {
           _dataOutIsolate.sink.add(data);
           onDataOut!(data);
         }
-      }, onError: (dynamic err) {
+      }, onError: (final dynamic err) {
         _fromIsolateErrorPort.sendPort.send(err);
       });
-      _fromIsolateErrorPort.listen((dynamic err) {
+      _fromIsolateErrorPort.listen((final dynamic err) {
         onError!(err);
       });
       //print("I > init data in");
